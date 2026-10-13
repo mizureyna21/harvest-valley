@@ -11,10 +11,13 @@ var blink_tween: Tween = null
 
 # --- Knockback ---
 var knockback_velocity = Vector2.ZERO
-var knockback_friction = 600.0  # pakai nilai yang sudah kamu atur sebelumnya
+var knockback_friction = 600.0 
 
 # Menyimpan posisi awal untuk respawn
 @onready var spawn_position = global_position
+
+# Variabel untuk menyimpan arah terakhir (default menghadap depan)
+var last_anim_direction: String = "front"
 
 # Referensi node
 @onready var anim = $"main character"
@@ -61,14 +64,19 @@ func _physics_process(delta):
 func update_animation(dir: Vector2):
 	if dir.x > 0:
 		anim.play("walk_right")
+		last_anim_direction = "right"
 	elif dir.x < 0:
 		anim.play("walk_left")
+		last_anim_direction = "left"
 	elif dir.y > 0:
 		anim.play("walk_bottom")
+		last_anim_direction = "front" # Sesuaikan jika nama idle kamu "idle_bottom"
 	elif dir.y < 0:
 		anim.play("walk_top")
+		last_anim_direction = "top"   # Sesuaikan jika nama idle kamu "idle_back"
 	else:
-		anim.play("idle_front")
+		# Mainkan animasi idle sesuai arah terakhir
+		anim.play("idle_" + last_anim_direction)
 
 
 func update_health_bar():
@@ -146,7 +154,7 @@ func die():
 	if death_screen:
 		death_screen.show()
 	if respawn_button:
-		respawn_button.grab_focus()  # bisa ditekan dengan Enter/Spasi
+		respawn_button.grab_focus() 
 
 
 func respawn():
