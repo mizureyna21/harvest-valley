@@ -6655,7 +6655,6 @@ animations = [{
 [node name="Node2D" type="Node2D" unique_id=1168404102]
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1873250363]
-visible = false
 
 [node name="Control" type="Control" parent="HUD" unique_id=450777988]
 custom_minimum_size = Vector2(1.005, 0)
