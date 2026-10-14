@@ -6781,6 +6781,9 @@ tile_set = SubResource("TileSet_sn0t7")
 [node name="enemy" parent="." unique_id=798970522 instance=ExtResource("4_kdubu")]
 position = Vector2(529, 389)
 
+[node name="enemy2" parent="." unique_id=1025798182 instance=ExtResource("7_d21ai")]
+position = Vector2(282, 245)
+
 [node name="Player" type="CharacterBody2D" parent="." unique_id=157117688]
 motion_mode = 1
 script = ExtResource("5_ir8iy")
@@ -6795,7 +6798,6 @@ position = Vector2(436, 301)
 scale = Vector2(0.11, 0.11)
 sprite_frames = SubResource("SpriteFrames_sn0t7")
 animation = &"idle_front"
-frame_progress = 0.9071384
 
 [node name="Camera2D" type="Camera2D" parent="Player" unique_id=834084987]
 position = Vector2(436, 301)
@@ -6806,5 +6808,5 @@ limit_right = 1151
 limit_bottom = 657
 position_smoothing_enabled = true
 
-[node name="enemy2" parent="." unique_id=1025798182 instance=ExtResource("7_d21ai")]
-position = Vector2(282, 245)
+[editable path="enemy"]
+[editable path="enemy2"]

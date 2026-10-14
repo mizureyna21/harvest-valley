@@ -1,87 +1,87 @@
 [gd_scene format=3 uid="uid://dexpbcpdsc4jp"]
 
 [ext_resource type="Script" uid="uid://dxbvbxwuka7kj" path="res://ghost.gd" id="1_6attn"]
-[ext_resource type="Texture2D" uid="uid://bvmvv2ndneokg" path="res://char/Carbon Ghost.png" id="2_6attn"]
+[ext_resource type="Texture2D" uid="uid://c8edlk0mwjov8" path="res://char/newCarbonGhost.png" id="2_6attn"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_obmiq"]
 atlas = ExtResource("2_6attn")
-region = Rect2(0, 96, 16, 24)
+region = Rect2(0, 1280, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_xtt71"]
 atlas = ExtResource("2_6attn")
-region = Rect2(16, 96, 16, 24)
+region = Rect2(320, 1280, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_kjq22"]
 atlas = ExtResource("2_6attn")
-region = Rect2(32, 96, 16, 24)
+region = Rect2(640, 1280, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hiw70"]
 atlas = ExtResource("2_6attn")
-region = Rect2(48, 96, 16, 24)
+region = Rect2(960, 1280, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jw18l"]
 atlas = ExtResource("2_6attn")
-region = Rect2(0, 0, 16, 24)
+region = Rect2(0, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2jh1f"]
 atlas = ExtResource("2_6attn")
-region = Rect2(16, 0, 16, 24)
+region = Rect2(320, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pa7oq"]
 atlas = ExtResource("2_6attn")
-region = Rect2(32, 0, 16, 24)
+region = Rect2(640, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yc3kp"]
 atlas = ExtResource("2_6attn")
-region = Rect2(48, 0, 16, 24)
+region = Rect2(960, 0, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_bqjpw"]
 atlas = ExtResource("2_6attn")
-region = Rect2(0, 72, 16, 24)
+region = Rect2(0, 320, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_wacvi"]
 atlas = ExtResource("2_6attn")
-region = Rect2(16, 72, 16, 24)
+region = Rect2(320, 320, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_neao1"]
 atlas = ExtResource("2_6attn")
-region = Rect2(32, 72, 16, 24)
+region = Rect2(640, 320, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2pguw"]
 atlas = ExtResource("2_6attn")
-region = Rect2(48, 72, 16, 24)
+region = Rect2(960, 320, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_702ga"]
 atlas = ExtResource("2_6attn")
-region = Rect2(0, 24, 16, 24)
+region = Rect2(0, 960, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d0t02"]
 atlas = ExtResource("2_6attn")
-region = Rect2(16, 24, 16, 24)
+region = Rect2(320, 960, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_0fo3v"]
 atlas = ExtResource("2_6attn")
-region = Rect2(32, 24, 16, 24)
+region = Rect2(640, 960, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ecrtm"]
 atlas = ExtResource("2_6attn")
-region = Rect2(48, 24, 16, 24)
+region = Rect2(960, 960, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fwi00"]
 atlas = ExtResource("2_6attn")
-region = Rect2(0, 48, 16, 24)
+region = Rect2(0, 640, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_jbwce"]
 atlas = ExtResource("2_6attn")
-region = Rect2(16, 48, 16, 24)
+region = Rect2(320, 640, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_2xrht"]
 atlas = ExtResource("2_6attn")
-region = Rect2(32, 48, 16, 24)
+region = Rect2(640, 640, 320, 320)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_t7cr1"]
 atlas = ExtResource("2_6attn")
-region = Rect2(48, 48, 16, 24)
+region = Rect2(960, 640, 320, 320)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_riqys"]
 animations = [{
@@ -188,9 +188,9 @@ knockback_force = 150.0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1213785606]
 position = Vector2(0, 6.42)
-scale = Vector2(1.41, 1.41)
+scale = Vector2(0.135, 0.135)
 sprite_frames = SubResource("SpriteFrames_riqys")
-animation = &"walk_right"
+animation = &"death_animation"
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1361597604]
