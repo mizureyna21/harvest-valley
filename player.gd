@@ -11,7 +11,10 @@ var blink_tween: Tween = null
 
 # --- Knockback ---
 var knockback_velocity = Vector2.ZERO
-var knockback_friction = 600.0 
+var knockback_friction = 600.0
+
+# --- Damage dari tile (kaktus, dll) ---
+@export var tile_knockback_force: float = 150.0
 
 # Menyimpan posisi awal untuk respawn
 @onready var spawn_position = global_position
@@ -55,11 +58,41 @@ func _physics_process(delta):
 	velocity = direction * speed + knockback_velocity
 	move_and_slide()
 
+	# Cek apakah menabrak tile yang bisa memberi damage (kaktus)
+	check_tile_damage()
+
 	# Knockback melambat sampai berhenti
 	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
 
 	update_animation(direction)
 
+
+func check_tile_damage():
+	if is_invincible or health <= 0:
+		return
+
+	for i in get_slide_collision_count():
+		var collision = get_slide_collision(i)
+		var collider = collision.get_collider()
+
+		if collider is TileMapLayer:
+			if collider.tile_set == null:
+				continue
+			if collider.tile_set.get_custom_data_layer_by_name("damage") == -1:
+				continue
+
+			var point = collision.get_position() - collision.get_normal() * 2.0
+			var cell = collider.local_to_map(collider.to_local(point))
+			var data = collider.get_cell_tile_data(cell)
+			print("Cell: ", cell, " | data: ", data)
+			if data == null:
+				continue
+
+			var tile_damage = data.get_custom_data("damage")
+			print("Damage tile: ", tile_damage)
+			if tile_damage > 0:
+				take_damage(tile_damage, collision.get_normal(), tile_knockback_force)
+				return
 
 func update_animation(dir: Vector2):
 	if dir.x > 0:
@@ -154,7 +187,7 @@ func die():
 	if death_screen:
 		death_screen.show()
 	if respawn_button:
-		respawn_button.grab_focus() 
+		respawn_button.grab_focus()
 
 
 func respawn():
