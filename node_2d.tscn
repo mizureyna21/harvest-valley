@@ -1,5 +1,6 @@
 [gd_scene format=4 uid="uid://ro8qh0ndd4u2"]
 
+[ext_resource type="Script" uid="uid://ybx7mu5onnwj" path="res://score_label.gd" id="1_0h7mo"]
 [ext_resource type="Texture2D" uid="uid://d3odd8w118mws" path="res://map/spring_outdoorsTileSheet.es-ES.png" id="1_kdubu"]
 [ext_resource type="Texture2D" uid="uid://d1v41pyafh6m2" path="res://map/houses.png" id="2_d21ai"]
 [ext_resource type="Texture2D" uid="uid://mlx1f63k8h1e" path="res://map/crops.png" id="2_rj586"]
@@ -10,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://doywuvrv6dgiy" path="res://bug.tscn" id="7_4d7sh"]
 [ext_resource type="PackedScene" uid="uid://dexpbcpdsc4jp" path="res://ghost.tscn" id="7_d21ai"]
 [ext_resource type="PackedScene" uid="uid://b5l4ysqtwxbm0" path="res://fly.tscn" id="10_ir8iy"]
+[ext_resource type="PackedScene" uid="uid://djfmjv5haawtk" path="res://forage/forageable.tscn" id="11_hqns4"]
+[ext_resource type="Resource" uid="uid://dt4acdjnrbj1i" path="res://items/daffodil.tres" id="12_x0ka3"]
 
 [sub_resource type="Theme" id="Theme_d21ai"]
 
@@ -7198,10 +7201,12 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_bhunq"]
+radius = 16.8
+
 [node name="Node2D" type="Node2D" unique_id=1168404102]
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1873250363]
-visible = false
 
 [node name="Control" type="Control" parent="HUD" unique_id=450777988]
 custom_minimum_size = Vector2(1.005, 0)
@@ -7264,6 +7269,17 @@ horizontal_alignment = 1
 custom_minimum_size = Vector2(140, 40)
 layout_mode = 2
 text = "RESPAWN"
+
+[node name="ScoreLabel" type="Label" parent="HUD" unique_id=1459421449]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_bottom = 23.0
+grow_horizontal = 0
+theme_override_constants/outline_size = 4
+theme_override_font_sizes/font_size = 24
+script = ExtResource("1_0h7mo")
 
 [node name="tree_top" type="TileMapLayer" parent="." unique_id=169133380]
 z_index = 10
@@ -7334,6 +7350,42 @@ position = Vector2(282, 245)
 [node name="enemy3" parent="." unique_id=270200552 instance=ExtResource("7_4d7sh")]
 position = Vector2(722, 182)
 
+[node name="Foragables" type="Node2D" parent="." unique_id=126043011]
+
+[node name="Forageable" parent="Foragables" unique_id=411033853 instance=ExtResource("11_hqns4")]
+position = Vector2(403.475, 301)
+item = ExtResource("12_x0ka3")
+
+[node name="Foragables2" type="Node2D" parent="." unique_id=1545773046]
+
+[node name="Forageable" parent="Foragables2" unique_id=240996456 instance=ExtResource("11_hqns4")]
+position = Vector2(399, 198)
+item = ExtResource("12_x0ka3")
+
+[node name="Foragables3" type="Node2D" parent="." unique_id=608065903]
+
+[node name="Forageable" parent="Foragables3" unique_id=369691508 instance=ExtResource("11_hqns4")]
+position = Vector2(487, 165)
+item = ExtResource("12_x0ka3")
+
+[node name="Foragables4" type="Node2D" parent="." unique_id=699804934]
+
+[node name="Forageable" parent="Foragables4" unique_id=1964746158 instance=ExtResource("11_hqns4")]
+position = Vector2(436, 396)
+item = ExtResource("12_x0ka3")
+
+[node name="Foragables5" type="Node2D" parent="." unique_id=991871496]
+
+[node name="Forageable" parent="Foragables5" unique_id=451011043 instance=ExtResource("11_hqns4")]
+position = Vector2(244, 409)
+item = ExtResource("12_x0ka3")
+
+[node name="Foragables6" type="Node2D" parent="." unique_id=1112492188]
+
+[node name="Forageable" parent="Foragables6" unique_id=2114831682 instance=ExtResource("11_hqns4")]
+position = Vector2(556, 118)
+item = ExtResource("12_x0ka3")
+
 [node name="Player" type="CharacterBody2D" parent="." unique_id=157117688]
 motion_mode = 1
 script = ExtResource("5_ir8iy")
@@ -7357,6 +7409,14 @@ limit_top = 0
 limit_right = 1151
 limit_bottom = 657
 position_smoothing_enabled = true
+
+[node name="InteractArea" type="Area2D" parent="Player" unique_id=615426781]
+collision_layer = 0
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player/InteractArea" unique_id=703257721]
+position = Vector2(436, 306)
+shape = SubResource("CircleShape2D_bhunq")
 
 [node name="enemy4" parent="." unique_id=618346210 instance=ExtResource("10_ir8iy")]
 position = Vector2(681, 428)

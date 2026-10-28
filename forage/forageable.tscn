@@ -1,0 +1,16 @@
+[gd_scene format=3 uid="uid://djfmjv5haawtk"]
+
+[ext_resource type="Script" uid="uid://dko146bknt35x" path="res://forage/forageable.gd" id="1_0wk0i"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_bhunq"]
+radius = 8.0
+
+[node name="Forageable" type="Area2D" unique_id=411033853]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_0wk0i")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1295386339]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1349059984]
+shape = SubResource("CircleShape2D_bhunq")

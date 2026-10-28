@@ -25,6 +25,7 @@ var last_anim_direction: String = "front"
 # Referensi node
 @onready var anim = $"main character"
 @onready var body_shape = $CollisionShape2D
+@onready var interact_area = $InteractArea
 @onready var health_bar = get_node_or_null("../HUD/Control/HealthLabel")
 @onready var death_screen = get_node_or_null("../HUD/DeathScreen")
 @onready var respawn_button = get_node_or_null("../HUD/DeathScreen/VBoxContainer/RespawnButton")
@@ -65,6 +66,31 @@ func _physics_process(delta):
 	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
 
 	update_animation(direction)
+
+
+# --- Interaksi: memungut item foraging ---
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("interact"):
+		try_collect()
+
+
+func try_collect() -> void:
+	# Tidak bisa memungut saat sudah mati
+	if health <= 0:
+		return
+
+	# Ambil forageable terdekat yang masih bisa dipungut
+	var nearest: Forageable = null
+	var best := INF
+	for area in interact_area.get_overlapping_areas():
+		if area is Forageable and not area.collected:
+			var d := global_position.distance_to(area.global_position)
+			if d < best:
+				best = d
+				nearest = area
+
+	if nearest:
+		nearest.collect()
 
 
 func check_tile_damage():

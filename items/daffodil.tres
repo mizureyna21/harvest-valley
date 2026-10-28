@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://dt4acdjnrbj1i"]
+
+[ext_resource type="Texture2D" uid="uid://hewge5xg2r58" path="res://items/daffodil.png" id="1_36dnk"]
+[ext_resource type="Script" uid="uid://cl6npm3ywf8qs" path="res://items/item_data.gd" id="1_rb23a"]
+
+[resource]
+script = ExtResource("1_rb23a")
+id = &"daffodil"
+display_name = "Daffodil"
+icon = ExtResource("1_36dnk")
+metadata/_custom_type_script = "uid://cl6npm3ywf8qs"
