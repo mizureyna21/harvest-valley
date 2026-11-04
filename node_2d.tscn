@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://ybx7mu5onnwj" path="res://score_label.gd" id="1_0h7mo"]
 [ext_resource type="Texture2D" uid="uid://d3odd8w118mws" path="res://map/spring_outdoorsTileSheet.es-ES.png" id="1_kdubu"]
 [ext_resource type="Texture2D" uid="uid://d1v41pyafh6m2" path="res://map/houses.png" id="2_d21ai"]
+[ext_resource type="PackedScene" uid="uid://r1vs64a5i6m0" path="res://PauseMenu.tscn" id="2_nr8wp"]
 [ext_resource type="Texture2D" uid="uid://mlx1f63k8h1e" path="res://map/crops.png" id="2_rj586"]
 [ext_resource type="Texture2D" uid="uid://clhkhpmq11u8a" path="res://map/Big Shed.png" id="3_d21ai"]
 [ext_resource type="PackedScene" uid="uid://r8sha2ivk5tm" path="res://slime.tscn" id="4_kdubu"]
@@ -7271,6 +7272,7 @@ layout_mode = 2
 text = "RESPAWN"
 
 [node name="ScoreLabel" type="Label" parent="HUD" unique_id=1459421449]
+visible = false
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
@@ -7280,6 +7282,8 @@ grow_horizontal = 0
 theme_override_constants/outline_size = 4
 theme_override_font_sizes/font_size = 24
 script = ExtResource("1_0h7mo")
+
+[node name="PauseMenu" parent="HUD" unique_id=327822993 instance=ExtResource("2_nr8wp")]
 
 [node name="tree_top" type="TileMapLayer" parent="." unique_id=169133380]
 z_index = 10

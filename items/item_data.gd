@@ -5,4 +5,4 @@ extends Resource
 @export var display_name: String
 @export var icon: Texture2D
 @export var max_stack := 99
-@export var score_value := 10
+@export var heal_amount := 10

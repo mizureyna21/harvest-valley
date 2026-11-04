@@ -1,0 +1,112 @@
+[gd_scene format=3 uid="uid://cfnrqlgufjd8h"]
+
+[ext_resource type="Script" uid="uid://c7g0vt6ibqcs3" path="res://main_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://ba3bg0d35bwwf" path="res://menu/menu_bg.png" id="2_bg"]
+[ext_resource type="Texture2D" uid="uid://dp5ajgpk87il5" path="res://menu/title_sign.png" id="3_sign"]
+[ext_resource type="Texture2D" uid="uid://boqwqoof06v1a" path="res://menu/btn_normal.png" id="4_normal"]
+[ext_resource type="Texture2D" uid="uid://dwhnwljtw5yj5" path="res://menu/btn_hover.png" id="5_hover"]
+[ext_resource type="Texture2D" uid="uid://d1m6vkophujep" path="res://menu/btn_pressed.png" id="6_pressed"]
+[ext_resource type="Texture2D" uid="uid://bukivniewfp5c" path="res://menu/icon_start.png" id="7_start"]
+[ext_resource type="Texture2D" uid="uid://b0bb3wel8fhdj" path="res://menu/icon_quit.png" id="8_quit"]
+
+[sub_resource type="StyleBoxTexture" id="sb_normal"]
+content_margin_left = 22.0
+content_margin_right = 32.0
+texture = ExtResource("4_normal")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="sb_pressed"]
+texture = ExtResource("6_pressed")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="sb_hover"]
+texture = ExtResource("5_hover")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[node name="MainMenu" type="Control" unique_id=453840716]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Background" type="TextureRect" parent="." unique_id=1966837660]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_bg")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="Title" type="TextureRect" parent="." unique_id=481450942]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -459.0
+offset_top = 40.0
+offset_right = 459.0
+offset_bottom = 292.0
+grow_horizontal = 2
+texture = ExtResource("3_sign")
+
+[node name="StartGame" type="Button" parent="." unique_id=1474017170]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 340.0
+offset_right = 120.0
+offset_bottom = 412.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_focus_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.8, 0.55, 1)
+theme_override_colors/font_hover_color = Color(1, 0.94, 0.78, 1)
+theme_override_constants/h_separation = 8
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("sb_normal")
+theme_override_styles/pressed = SubResource("sb_pressed")
+theme_override_styles/hover = SubResource("sb_hover")
+theme_override_styles/focus = SubResource("sb_hover")
+text = "Start Game"
+icon = ExtResource("7_start")
+
+[node name="Quit" type="Button" parent="." unique_id=1047008097]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -120.0
+offset_top = 428.0
+offset_right = 120.0
+offset_bottom = 500.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_focus_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.8, 0.55, 1)
+theme_override_colors/font_hover_color = Color(1, 0.94, 0.78, 1)
+theme_override_constants/h_separation = 8
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("sb_normal")
+theme_override_styles/pressed = SubResource("sb_pressed")
+theme_override_styles/hover = SubResource("sb_hover")
+theme_override_styles/focus = SubResource("sb_hover")
+text = "Quit"
+icon = ExtResource("8_quit")

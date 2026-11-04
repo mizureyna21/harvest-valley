@@ -16,7 +16,9 @@ func collect() -> void:
 		return
 	collected = true
 	Inventory.add_item(item, amount)
-	GameManager.add_score(item.score_value * amount)
+	var player := get_tree().get_first_node_in_group("player")
+	if player:
+		player.heal(item.heal_amount * amount)
 	set_deferred("monitorable", false)
 	var tw := create_tween().set_parallel()
 	tw.tween_property(self, "position:y", position.y - 12, 0.25)

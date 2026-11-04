@@ -32,6 +32,8 @@ var last_anim_direction: String = "front"
 
 
 func _ready():
+	add_to_group("player")
+
 	# Mode top-down
 	motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
 
@@ -155,6 +157,20 @@ func update_health_bar():
 	var fill = health_bar.get_theme_stylebox("fill")
 	if fill is StyleBoxFlat:
 		fill.bg_color = warna
+
+
+# --- Menambah HP (dipanggil saat memungut item) ---
+func heal(amount: int) -> void:
+	if health <= 0:
+		return
+	health = min(health + amount, max_health)
+	update_health_bar()
+	print("HP Player sekarang: ", health)
+
+	# Kedip hijau singkat sebagai umpan balik
+	var tw := create_tween()
+	tw.tween_property(anim, "modulate", Color(0.5, 1, 0.5, 1), 0.1)
+	tw.tween_property(anim, "modulate", Color(1, 1, 1, 1), 0.2)
 
 
 func take_damage(amount, knockback_dir = Vector2.ZERO, knockback_force = 0.0):

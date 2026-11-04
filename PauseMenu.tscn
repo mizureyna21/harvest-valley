@@ -1,0 +1,119 @@
+[gd_scene format=3 uid="uid://r1vs64a5i6m0"]
+
+[ext_resource type="Script" uid="uid://cdves5g6g27s1" path="res://pause_menu.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://dvhdabxvo7p1f" path="res://menu/panel.png" id="2_panel"]
+[ext_resource type="Texture2D" uid="uid://cdfyk0fys8yyb" path="res://menu/pause_title.png" id="3_title"]
+[ext_resource type="Texture2D" uid="uid://boqwqoof06v1a" path="res://menu/btn_normal.png" id="4_normal"]
+[ext_resource type="Texture2D" uid="uid://dwhnwljtw5yj5" path="res://menu/btn_hover.png" id="5_hover"]
+[ext_resource type="Texture2D" uid="uid://d1m6vkophujep" path="res://menu/btn_pressed.png" id="6_pressed"]
+[ext_resource type="Texture2D" uid="uid://c3l74swcjmetp" path="res://menu/icon_resume.png" id="7_resume"]
+[ext_resource type="Texture2D" uid="uid://0gw1pfff1rob" path="res://menu/icon_home.png" id="8_home"]
+
+[sub_resource type="StyleBoxTexture" id="sb_panel"]
+texture = ExtResource("2_panel")
+texture_margin_left = 24.0
+texture_margin_top = 24.0
+texture_margin_right = 24.0
+texture_margin_bottom = 24.0
+
+[sub_resource type="StyleBoxTexture" id="sb_normal"]
+texture = ExtResource("4_normal")
+texture_margin_left = 19.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="sb_pressed"]
+texture = ExtResource("6_pressed")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[sub_resource type="StyleBoxTexture" id="sb_hover"]
+texture = ExtResource("5_hover")
+texture_margin_left = 12.0
+texture_margin_top = 12.0
+texture_margin_right = 12.0
+texture_margin_bottom = 12.0
+
+[node name="PauseMenu" type="Control" unique_id=1702819624]
+process_mode = 3
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+
+[node name="Dim" type="ColorRect" parent="." unique_id=406618902]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 0.55)
+
+[node name="Panel" type="Panel" parent="." unique_id=9596938]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -154.0
+offset_right = 180.0
+offset_bottom = 154.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("sb_panel")
+
+[node name="PausedTitle" type="TextureRect" parent="Panel" unique_id=1447874084]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 28.0
+offset_right = 291.0
+offset_bottom = 82.0
+texture = ExtResource("3_title")
+
+[node name="Resume" type="Button" parent="Panel" unique_id=1980073646]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 108.0
+offset_right = 300.0
+offset_bottom = 180.0
+theme_override_colors/font_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_focus_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.8, 0.55, 1)
+theme_override_colors/font_hover_color = Color(1, 0.94, 0.78, 1)
+theme_override_constants/h_separation = 8
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("sb_normal")
+theme_override_styles/pressed = SubResource("sb_pressed")
+theme_override_styles/hover = SubResource("sb_hover")
+theme_override_styles/focus = SubResource("sb_hover")
+text = "Resume"
+icon = ExtResource("7_resume")
+
+[node name="MainMenu" type="Button" parent="Panel" unique_id=1517236855]
+layout_mode = 0
+offset_left = 60.0
+offset_top = 196.0
+offset_right = 300.0
+offset_bottom = 268.0
+theme_override_colors/font_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_focus_color = Color(1, 0.94, 0.78, 1)
+theme_override_colors/font_pressed_color = Color(0.9, 0.8, 0.55, 1)
+theme_override_colors/font_hover_color = Color(1, 0.94, 0.78, 1)
+theme_override_constants/h_separation = 8
+theme_override_font_sizes/font_size = 24
+theme_override_styles/normal = SubResource("sb_normal")
+theme_override_styles/pressed = SubResource("sb_pressed")
+theme_override_styles/hover = SubResource("sb_hover")
+theme_override_styles/focus = SubResource("sb_hover")
+text = "Main Menu"
+icon = ExtResource("8_home")
