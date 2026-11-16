@@ -29,6 +29,10 @@ var last_anim_direction: String = "front"
 @onready var health_bar = get_node_or_null("../HUD/Control/HealthLabel")
 @onready var death_screen = get_node_or_null("../HUD/DeathScreen")
 @onready var respawn_button = get_node_or_null("../HUD/DeathScreen/VBoxContainer/RespawnButton")
+@onready var camera: Camera2D = get_node_or_null("Camera2D")
+
+# Batas kamera area spawn (farm), dipulihkan saat respawn kalau player mati di goa
+var spawn_camera_limits := Rect2i()
 
 
 func _ready():
@@ -46,6 +50,10 @@ func _ready():
 		death_screen.hide()
 	if respawn_button:
 		respawn_button.pressed.connect(respawn)
+
+	if camera:
+		spawn_camera_limits = Rect2i(camera.limit_left, camera.limit_top,
+				camera.limit_right - camera.limit_left, camera.limit_bottom - camera.limit_top)
 
 
 func _physics_process(delta):
@@ -274,6 +282,9 @@ func respawn():
 	update_health_bar()
 	global_position = spawn_position
 	knockback_velocity = Vector2.ZERO
+	if camera:
+		MapTransition.apply_camera_limits(camera, spawn_camera_limits)
+		camera.reset_smoothing()
 	is_invincible = false
 
 	# Nyalakan kembali player dan collision-nya
