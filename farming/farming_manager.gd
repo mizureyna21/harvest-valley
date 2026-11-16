@@ -185,6 +185,14 @@ func start_new_day() -> void:
 	day_changed.emit(day)
 
 
+# Dipanggil saat tidur (Bed): ganti hari sekarang juga, lalu timer hari mulai dari awal
+# supaya hari baru tidak langsung habis beberapa detik kemudian.
+func skip_to_next_day() -> void:
+	start_new_day()
+	if _day_timer:
+		_day_timer.start(day_length_seconds)
+
+
 # --- Cek data tile (mengikuti pola custom data "damage" di player.gd) ---
 func is_tillable(cell: Vector2i) -> bool:
 	if terrain_layer == null:

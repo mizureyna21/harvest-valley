@@ -1,0 +1,23 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" uid="uid://dko146bknt35x" path="res://forage/forageable.gd" id="1_forage"]
+[ext_resource type="Texture2D" path="res://map/Giftbox.png" id="2_gift"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gift"]
+atlas = ExtResource("2_gift")
+region = Rect2(0, 16, 16, 16)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_gift"]
+radius = 9.0
+
+[node name="Kado" type="Area2D"]
+collision_layer = 16
+collision_mask = 0
+script = ExtResource("1_forage")
+use_item_icon = false
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("AtlasTexture_gift")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_gift")

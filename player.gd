@@ -16,7 +16,9 @@ var knockback_friction = 600.0
 # --- Damage dari tile (kaktus, dll) ---
 @export var tile_knockback_force: float = 150.0
 
-# Menyimpan posisi awal untuk respawn
+# Menyimpan posisi awal untuk respawn.
+# Player di node_2d.tscn mulai di dalam rumah (samping kasur), jadi setelah mati player
+# respawn di dalam rumah juga — itu perilaku yang diinginkan (seperti Stardew).
 @onready var spawn_position = global_position
 
 # Variabel untuk menyimpan arah terakhir (default menghadap depan)
@@ -91,13 +93,15 @@ func try_collect() -> void:
 	if health <= 0:
 		return
 
-	# Ambil forageable / tanaman matang terdekat yang masih bisa diambil.
+	# Ambil forageable / tanaman matang / objek interaktif (mis. kasur) terdekat.
+	# Objek interaktif = area apa pun yang punya method interact(player) (duck typing).
 	# Jarak diukur dari body_shape karena node Player sendiri ada di (0, 0).
 	var nearest: Area2D = null
 	var best := INF
 	for area in interact_area.get_overlapping_areas():
 		var can_take: bool = (area is Forageable and not area.collected) \
-				or (area is Crop and area.can_harvest())
+				or (area is Crop and area.can_harvest()) \
+				or area.has_method("interact")
 		if can_take:
 			var d: float = body_shape.global_position.distance_to(area.global_position)
 			if d < best:
@@ -108,6 +112,8 @@ func try_collect() -> void:
 		nearest.harvest()
 	elif nearest is Forageable:
 		nearest.collect()
+	elif nearest:
+		nearest.interact(self)
 
 
 # --- Bercocok tanam: pakai alat aktif ke tile di depan player ---
