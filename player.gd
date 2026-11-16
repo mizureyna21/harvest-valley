@@ -70,10 +70,12 @@ func _physics_process(delta):
 	update_animation(direction)
 
 
-# --- Interaksi: memungut item foraging ---
+# --- Interaksi: memungut item foraging / panen, dan memakai alat ---
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("interact"):
 		try_collect()
+	elif event.is_action_pressed("attack"):
+		use_tool()
 
 
 func try_collect() -> void:
@@ -81,18 +83,46 @@ func try_collect() -> void:
 	if health <= 0:
 		return
 
-	# Ambil forageable terdekat yang masih bisa dipungut
-	var nearest: Forageable = null
+	# Ambil forageable / tanaman matang terdekat yang masih bisa diambil.
+	# Jarak diukur dari body_shape karena node Player sendiri ada di (0, 0).
+	var nearest: Area2D = null
 	var best := INF
 	for area in interact_area.get_overlapping_areas():
-		if area is Forageable and not area.collected:
-			var d := global_position.distance_to(area.global_position)
+		var can_take: bool = (area is Forageable and not area.collected) \
+				or (area is Crop and area.can_harvest())
+		if can_take:
+			var d: float = body_shape.global_position.distance_to(area.global_position)
 			if d < best:
 				best = d
 				nearest = area
 
-	if nearest:
+	if nearest is Crop:
+		nearest.harvest()
+	elif nearest is Forageable:
 		nearest.collect()
+
+
+# --- Bercocok tanam: pakai alat aktif ke tile di depan player ---
+func use_tool() -> void:
+	if health <= 0:
+		return
+	var farming := get_tree().get_first_node_in_group("farming_manager") as FarmingManager
+	if farming == null:
+		return
+	# Posisi kaki = collision shape (node Player sendiri ada di (0, 0))
+	farming.use_active_tool(body_shape.global_position, get_facing_vector())
+
+
+func get_facing_vector() -> Vector2i:
+	match last_anim_direction:
+		"left":
+			return Vector2i.LEFT
+		"right":
+			return Vector2i.RIGHT
+		"top":
+			return Vector2i.UP
+		_:
+			return Vector2i.DOWN
 
 
 func check_tile_damage():

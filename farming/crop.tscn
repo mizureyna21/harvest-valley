@@ -1,0 +1,18 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://farming/crop.gd" id="1_crop"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_crop"]
+size = Vector2(14, 14)
+
+[node name="Crop" type="Area2D"]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_crop")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+region_enabled = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_crop")

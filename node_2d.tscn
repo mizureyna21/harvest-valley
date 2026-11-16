@@ -14,6 +14,14 @@
 [ext_resource type="PackedScene" uid="uid://b5l4ysqtwxbm0" path="res://fly.tscn" id="10_ir8iy"]
 [ext_resource type="PackedScene" uid="uid://djfmjv5haawtk" path="res://forage/forageable.tscn" id="11_hqns4"]
 [ext_resource type="Resource" uid="uid://dt4acdjnrbj1i" path="res://items/daffodil.tres" id="12_x0ka3"]
+[ext_resource type="Resource" path="res://items/watering_can.tres" id="f_can"]
+[ext_resource type="PackedScene" path="res://farming/crop.tscn" id="f_crop"]
+[ext_resource type="Resource" path="res://items/hoe.tres" id="f_hoe"]
+[ext_resource type="Script" uid="uid://r1wudrykt0ip" path="res://farming/farming_hud.gd" id="f_hud"]
+[ext_resource type="Script" uid="uid://cl6npm3ywf8qs" path="res://items/item_data.gd" id="f_itemdata"]
+[ext_resource type="Script" uid="uid://mwv3h83uy7kg" path="res://farming/farming_manager.gd" id="f_mgr"]
+[ext_resource type="Resource" uid="uid://chiwb3kfe7mvn" path="res://items/parsnip_seed.tres" id="f_seed"]
+[ext_resource type="TileSet" uid="uid://dfqphc12sgycc" path="res://farming/farmland_tileset.tres" id="f_tileset"]
 
 [sub_resource type="Theme" id="Theme_d21ai"]
 
@@ -2612,9 +2620,11 @@ texture = ExtResource("1_kdubu")
 23:5/0 = 0
 24:5/0 = 0
 0:6/0 = 0
+0:6/0/custom_data_0 = true
 1:6/0 = 0
 2:6/0 = 0
 3:6/0 = 0
+3:6/0/custom_data_0 = true
 6:6/0 = 0
 7:6/0 = 0
 8:6/0 = 0
@@ -2635,8 +2645,11 @@ texture = ExtResource("1_kdubu")
 23:6/0 = 0
 24:6/0 = 0
 0:7/0 = 0
+0:7/0/custom_data_0 = true
 1:7/0 = 0
+1:7/0/custom_data_0 = true
 2:7/0 = 0
+2:7/0/custom_data_0 = true
 3:7/0 = 0
 4:7/0 = 0
 5:7/0 = 0
@@ -2661,7 +2674,9 @@ texture = ExtResource("1_kdubu")
 24:7/0 = 0
 0:8/0 = 0
 1:8/0 = 0
+1:8/0/custom_data_0 = true
 2:8/0 = 0
+2:8/0/custom_data_0 = true
 3:8/0 = 0
 4:8/0 = 0
 5:8/0 = 0
@@ -2686,7 +2701,9 @@ texture = ExtResource("1_kdubu")
 24:8/0 = 0
 0:9/0 = 0
 1:9/0 = 0
+1:9/0/custom_data_0 = true
 2:9/0 = 0
+2:9/0/custom_data_0 = true
 3:9/0 = 0
 4:9/0 = 0
 5:9/0 = 0
@@ -2709,7 +2726,9 @@ texture = ExtResource("1_kdubu")
 24:9/0 = 0
 0:10/0 = 0
 1:10/0 = 0
+1:10/0/custom_data_0 = true
 2:10/0 = 0
+2:10/0/custom_data_0 = true
 3:10/0 = 0
 4:10/0 = 0
 5:10/0 = 0
@@ -4579,6 +4598,8 @@ texture = ExtResource("2_d21ai")
 9:26/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_riqys"]
+custom_data_layer_0/name = "tillable"
+custom_data_layer_0/type = 1
 sources/0 = SubResource("TileSetAtlasSource_x0ka3")
 sources/2 = SubResource("TileSetAtlasSource_0h7mo")
 
@@ -7232,6 +7253,17 @@ theme_override_styles/fill = SubResource("StyleBoxFlat_ir8iy")
 value = 100.0
 show_percentage = false
 
+[node name="FarmingHUD" type="Control" parent="HUD" unique_id=969404400 node_paths=PackedStringArray("farming_manager")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("f_hud")
+farming_manager = NodePath("../../FarmingManager")
+
 [node name="DeathScreen" type="Control" parent="HUD" unique_id=1232829054]
 layout_mode = 3
 anchors_preset = 15
@@ -7335,6 +7367,12 @@ position = Vector2(601, 646.85)
 scale = Vector2(140.19, 0.15)
 shape = SubResource("RectangleShape2D_riqys")
 
+[node name="farmland" type="TileMapLayer" parent="." unique_id=474687644]
+position = Vector2(1, 17)
+tile_set = ExtResource("f_tileset")
+
+[node name="Crops" type="Node2D" parent="." unique_id=1189867202]
+
 [node name="obstacle" type="TileMapLayer" parent="." unique_id=327273379]
 position = Vector2(1, 17)
 tile_map_data = PackedByteArray("AAAdABEAAAAIAA4AAAAdABIAAAAIAA8AAAAeABEAAAAJAA4AAAAeABIAAAAJAA8AAAAfABEAAAAKAA4AAAAfABIAAAAKAA8AAAAgABEAAAAKAA4AAAAgABIAAAAKAA8AAAAkABEAAAAIAA4AAAAkABIAAAAIAA8AAAAlABEAAAAJAA4AAAAlABIAAAAJAA8AAAAmABEAAAAKAA4AAAAmABIAAAAKAA8AAAAcAA0AAAALAA4AAAAcAA4AAAALAA8AAAAcAA8AAAALABAAAAAcABAAAAALABEAAAAnABEAAAAMAA4AAAAnABIAAAAMAA8AAAAoABEAAAANAA4AAAAoABIAAAANAA8AAAAyAA0AAQANACgAAAAyAA4AAQANACkAAAApAAgAAQANACgAAAApAAkAAQANACkAAAAdAAUAAQANACgAAAAdAAYAAQANACkAAAApAAIAAQANACgAAAApAAMAAQANACkAAAAZAA4AAQANACgAAAAZAA8AAQANACkAAAAlABgAAQANACgAAAAlABkAAQANACkAAAAoABsAAQANACgAAAAoABwAAQANACkAAAAhAB4AAQANACgAAAAhAB8AAQANACkAAAAqACIAAQANACgAAAAqACMAAQANACkAAAAJABsAAQANACgAAAAJABwAAQANACkAAAADACMAAQANACgAAAADACQAAQANACkAAAARACUAAQANACgAAAARACYAAQANACkAAAAFABYAAQANACgAAAAFABcAAQANACkAAAAEABAAAQANACgAAAAEABEAAQANACkAAAAIAAkAAQANACgAAAAIAAoAAQANACkAAAADAAEAAQANACgAAAADAAIAAQANACkAAAAKAAYAAQANACgAAAAKAAcAAQANACkAAAAPAAEAAQANACgAAAAPAAIAAQANACkAAAAXAAcAAQANACgAAAAXAAgAAQANACkAAAA=")
@@ -7424,6 +7462,15 @@ shape = SubResource("CircleShape2D_bhunq")
 
 [node name="enemy4" parent="." unique_id=618346210 instance=ExtResource("10_ir8iy")]
 position = Vector2(681, 428)
+
+[node name="FarmingManager" type="Node" parent="." unique_id=1184049577 node_paths=PackedStringArray("terrain_layer", "farmland_layer", "blocking_layers", "crop_parent")]
+script = ExtResource("f_mgr")
+terrain_layer = NodePath("../map/tanah")
+farmland_layer = NodePath("../farmland")
+blocking_layers = [NodePath("../map/building"), NodePath("../obstacle")]
+crop_scene = ExtResource("f_crop")
+crop_parent = NodePath("../Crops")
+tool_slots = Array[ExtResource("f_itemdata")]([ExtResource("f_hoe"), ExtResource("f_can"), ExtResource("f_seed")])
 
 [editable path="enemy"]
 [editable path="enemy2"]

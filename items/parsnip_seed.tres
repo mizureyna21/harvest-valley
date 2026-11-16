@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="SeedData" format=3 uid="uid://chiwb3kfe7mvn"]
+
+[ext_resource type="Script" uid="uid://bemaj3gqiu06k" path="res://farming/seed_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://mlx1f63k8h1e" path="res://map/crops.png" id="2_crops"]
+[ext_resource type="Resource" uid="uid://bbfb573elg7g" path="res://items/parsnip.tres" id="3_product"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_seed"]
+atlas = ExtResource("2_crops")
+region = Rect2(0, 16, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+product = ExtResource("3_product")
+crop_texture = ExtResource("2_crops")
+id = &"parsnip_seed"
+display_name = "Bibit Parsnip"
+icon = SubResource("AtlasTexture_seed")
+heal_amount = 0

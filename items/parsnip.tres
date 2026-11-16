@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://bbfb573elg7g"]
+
+[ext_resource type="Script" uid="uid://cl6npm3ywf8qs" path="res://items/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://mlx1f63k8h1e" path="res://map/crops.png" id="2_crops"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_parsnip"]
+atlas = ExtResource("2_crops")
+region = Rect2(80, 8, 16, 24)
+
+[resource]
+script = ExtResource("1_script")
+id = &"parsnip"
+display_name = "Parsnip"
+icon = SubResource("AtlasTexture_parsnip")
+heal_amount = 15
+metadata/_custom_type_script = "uid://cl6npm3ywf8qs"
