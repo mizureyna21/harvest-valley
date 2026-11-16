@@ -21,11 +21,15 @@ func _on_quit_pressed() -> void:
 	get_tree().quit()
 
 
-# Mulai permainan dari nol: skor dan isi inventory dikosongkan
+# Mulai permainan dari nol: gold dan isi inventory dikosongkan
 func _reset_progress() -> void:
 	var gm = get_node_or_null("/root/GameManager")
 	if gm:
-		gm.reset_score()
+		gm.reset_gold()
 	var inv = get_node_or_null("/root/Inventory")
 	if inv:
 		inv.items.clear()
+		inv.item_data.clear()
+		# Supaya FarmingManager memberi item awal (alat + bibit) lagi di permainan baru
+		if inv.has_meta("farming_starter_given"):
+			inv.remove_meta("farming_starter_given")

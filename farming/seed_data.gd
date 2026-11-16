@@ -6,7 +6,6 @@ extends ItemData
 
 @export var product: ItemData            # hasil panen (mis. parsnip.tres)
 @export var harvest_amount := 1          # jumlah hasil panen per tanaman
-@export var score_value := 10            # skor yang ditambahkan saat panen
 
 @export_group("Sprite Tanaman")
 @export var crop_texture: Texture2D      # spritesheet tanaman (map/crops.png)

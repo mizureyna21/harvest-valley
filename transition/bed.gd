@@ -38,6 +38,12 @@ func interact(player: CharacterBody2D) -> void:
 	var fade := ScreenFade.get_instance(get_tree())
 	await fade.fade_to(1.0, fade_time)
 
+	# Penjualan overnight ala Stardew: isi shipping bin dijual saat layar gelap, SEBELUM hari berganti
+	var earned := 0
+	var bin := get_tree().get_first_node_in_group("shipping_bin") as ShippingBin
+	if bin:
+		earned = bin.sell_overnight()
+
 	var farming := get_tree().get_first_node_in_group("farming_manager") as FarmingManager
 	if farming:
 		farming.skip_to_next_day()
@@ -58,3 +64,31 @@ func interact(player: CharacterBody2D) -> void:
 	player.set_process_unhandled_input(true)
 	_sleeping = false
 	slept.emit(farming.day if farming else 0)
+
+	# Ringkasan hasil jual semalam (tidak muncul kalau bin kosong)
+	if earned > 0:
+		_show_earnings_popup(earned)
+
+
+# Label sementara di tengah atas layar: "Hasil semalam: +70g", lalu memudar (~2 detik)
+func _show_earnings_popup(amount: int) -> void:
+	var layer := CanvasLayer.new()
+	layer.layer = 4   # di atas HUD (1), di bawah ScreenFade (5)
+	get_tree().current_scene.add_child(layer)
+
+	var label := Label.new()
+	label.text = "Hasil semalam: +%dg" % amount
+	label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	label.add_theme_font_size_override("font_size", 22)
+	label.add_theme_color_override("font_color", Color("ffd54f"))
+	label.add_theme_constant_override("outline_size", 6)
+	label.add_theme_color_override("font_outline_color", Color.BLACK)
+	label.set_anchors_and_offsets_preset(Control.PRESET_CENTER_TOP, Control.PRESET_MODE_MINSIZE, 70)
+	label.grow_horizontal = Control.GROW_DIRECTION_BOTH
+	layer.add_child(label)
+
+	var tw := label.create_tween()
+	tw.tween_interval(1.5)
+	tw.tween_property(label, "modulate:a", 0.0, 0.6)
+	tw.tween_callback(layer.queue_free)

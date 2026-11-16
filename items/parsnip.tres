@@ -13,4 +13,5 @@ id = &"parsnip"
 display_name = "Parsnip"
 icon = SubResource("AtlasTexture_parsnip")
 heal_amount = 15
+sell_price = 35
 metadata/_custom_type_script = "uid://cl6npm3ywf8qs"

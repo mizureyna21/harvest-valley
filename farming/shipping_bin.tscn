@@ -1,0 +1,30 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://farming/shipping_bin.gd" id="1_bin"]
+[ext_resource type="Texture2D" path="res://map/Shipping Bin.png" id="2_bin"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_area"]
+size = Vector2(40, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_body"]
+size = Vector2(28, 18)
+
+[node name="ShippingBin" type="Area2D"]
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("1_bin")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_bin")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_area")
+
+[node name="Body" type="StaticBody2D" parent="."]
+collision_layer = 1
+collision_mask = 0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body"]
+position = Vector2(0, 6)
+shape = SubResource("RectangleShape2D_body")

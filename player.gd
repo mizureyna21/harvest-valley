@@ -47,6 +47,13 @@ const BODY_CENTER := Vector2(436, 304)      # tengah badan relatif root Player (
 @export var sword_knockback := 160.0
 @export var sword_reach := 16.0             # jarak tengah hitbox dari tengah badan
 var _can_attack := true
+var _is_swinging := false                   # true selama animasi aksi (attack_/hoe_/water_) diputar
+
+# Animasi badan per alat farming (frame dari NEWCHAR.png, lihat tools/genattackanim.js).
+# Bibit tidak punya animasi, jadi langsung ditanam.
+const TOOL_ANIM_PREFIX := {&"hoe": "hoe_", &"watering_can": "water_"}
+# Jeda dari klik sampai efek ke tile: cangkul menyentuh tanah di frame ke-3, air keluar di frame ke-2
+const TOOL_IMPACT_DELAY := {&"hoe": 0.2, &"watering_can": 0.17}
 var sword_area: Area2D
 var _sword_shape: CollisionShape2D
 var _sword_sprite: Sprite2D
@@ -83,6 +90,10 @@ func _physics_process(delta):
 
 	if direction.length() > 0:
 		direction = direction.normalized()
+
+	# Selama mengayun pedang player berhenti sebentar (seperti Stardew), knockback tetap jalan
+	if _is_swinging:
+		direction = Vector2.ZERO
 
 	# Gerakan normal + dorongan knockback
 	velocity = direction * speed + knockback_velocity
@@ -140,13 +151,26 @@ func use_tool() -> void:
 	var farming := get_tree().get_first_node_in_group("farming_manager") as FarmingManager
 	if farming == null:
 		return
+	# Satu aksi sekaligus: klik saat animasi aksi masih jalan diabaikan
+	if _is_swinging:
+		return
 	var item := farming.get_active_item()
 	if item and item.id == SWORD_ID:
 		if Inventory.get_count(SWORD_ID) > 0:
 			sword_attack(item)
 		return
-	# Posisi kaki = collision shape (node Player sendiri ada di (0, 0))
-	farming.use_active_tool(body_shape.global_position, get_facing_vector())
+
+	# Posisi kaki = collision shape (node Player sendiri ada di (0, 0)).
+	# Diambil sekarang supaya target tile tetap sama walau efeknya baru diterapkan saat alat "kena".
+	var feet: Vector2 = body_shape.global_position
+	var facing := get_facing_vector()
+	var prefix: String = TOOL_ANIM_PREFIX.get(item.id, "") if item else ""
+	if prefix != "" and Inventory.get_count(item.id) > 0 and play_action_anim(prefix):
+		# Tunggu sampai cangkul menyentuh tanah / air gembor keluar, baru ubah tile
+		await get_tree().create_timer(TOOL_IMPACT_DELAY.get(item.id, 0.0)).timeout
+		if health <= 0:
+			return
+	farming.use_active_tool(feet, facing)
 
 
 # --- Pedang ---
@@ -164,8 +188,10 @@ func _setup_sword() -> void:
 	sword_area.add_child(_sword_shape)
 	add_child(sword_area)
 
-	# Visual tebasan (Pilihan A): sprite icon pedang yang diputar ~120 derajat lalu hilang.
-	# Belum ada frame animasi serang di NEWCHAR.png, jadi badan player tetap pakai animasi yang ada.
+	# Visual tebasan: animasi badan "attack_front/top/left/right" di SpriteFrames (frame ayunan pedang
+	# dari NEWCHAR.png, ditambahkan oleh tools/genattackanim.js). Sprite icon pedang yang diputar di bawah
+	# hanya cadangan kalau animasi attack_* untuk arah itu tidak ada.
+	anim.animation_finished.connect(_on_body_animation_finished)
 	_sword_sprite = Sprite2D.new()
 	_sword_sprite.name = "SwordSwing"
 	_sword_sprite.visible = false
@@ -205,7 +231,25 @@ func sword_attack(item: ItemData) -> void:
 	_can_attack = true
 
 
+# Mainkan animasi aksi badan "<prefix><arah>" (attack_/hoe_/water_ + front/top/left/right).
+# Return false kalau animasinya tidak ada (pemanggil bisa pakai cadangan).
+func play_action_anim(prefix: String) -> bool:
+	var anim_name := prefix + last_anim_direction
+	if anim.sprite_frames == null or not anim.sprite_frames.has_animation(anim_name):
+		return false
+	_is_swinging = true
+	anim.play(anim_name)
+	# Jaga-jaga kalau animation_finished tidak terpancar (mis. animasi di-set loop di editor)
+	var length := float(anim.sprite_frames.get_frame_count(anim_name)) / maxf(anim.sprite_frames.get_animation_speed(anim_name), 1.0)
+	get_tree().create_timer(length + 0.05).timeout.connect(_end_swing)
+	return true
+
+
 func _play_sword_swing(item: ItemData, dir: Vector2) -> void:
+	if play_action_anim("attack_"):
+		return
+
+	# Cadangan: sprite icon pedang diputar ~120 derajat
 	_sword_sprite.texture = item.icon
 	_sword_sprite.position = BODY_CENTER + dir * 4.0
 	# Saat menghadap atas pedang digambar di belakang badan, selain itu di depan
@@ -217,6 +261,19 @@ func _play_sword_swing(item: ItemData, dir: Vector2) -> void:
 	var tw := create_tween()
 	tw.tween_property(_sword_sprite, "rotation", center + deg_to_rad(60), 0.16)
 	tw.tween_callback(func(): _sword_sprite.visible = false)
+
+
+func _on_body_animation_finished() -> void:
+	var a := String(anim.animation)
+	if a.begins_with("attack_") or a.begins_with("hoe_") or a.begins_with("water_"):
+		_end_swing()
+
+
+func _end_swing() -> void:
+	if not _is_swinging:
+		return
+	_is_swinging = false
+	anim.play("idle_" + last_anim_direction)
 
 
 func get_facing_vector() -> Vector2i:
@@ -259,6 +316,9 @@ func check_tile_damage():
 				return
 
 func update_animation(dir: Vector2):
+	# Animasi serang sedang main -> jangan ditimpa animasi jalan/idle
+	if _is_swinging:
+		return
 	if dir.x > 0:
 		anim.play("walk_right")
 		last_anim_direction = "right"
@@ -380,6 +440,7 @@ func respawn():
 	update_health_bar()
 	global_position = spawn_position
 	knockback_velocity = Vector2.ZERO
+	_is_swinging = false
 	if camera:
 		MapTransition.apply_camera_limits(camera, spawn_camera_limits)
 		camera.reset_smoothing()

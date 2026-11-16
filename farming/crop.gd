@@ -57,10 +57,9 @@ func harvest() -> void:
 		return
 	is_harvested = true
 
+	# Hasil panen hanya masuk inventory; uang didapat dengan menjualnya lewat Shipping Bin
 	if seed_data and seed_data.product:
 		Inventory.add_item(seed_data.product, seed_data.harvest_amount)
-	if seed_data:
-		GameManager.add_score(seed_data.score_value)
 
 	harvested.emit(self)
 

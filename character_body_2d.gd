@@ -8,7 +8,7 @@ extends CharacterBody2D
 
 # --- Bisa diserang (interface sama dengan ghost.gd: take_damage + die) ---
 @export var max_health: int = 2
-@export var score_value: int = 5          # skor yang didapat player saat slime mati
+@export var gold_value: int = 5           # gold (drop monster) yang didapat player saat slime mati
 @export var knockback_friction: float = 600.0
 
 var player = null
@@ -149,7 +149,7 @@ func die():
 	$CollisionShape2D.set_deferred("disabled", true)
 	$DetectionArea.set_deferred("monitoring", false)
 	$HitboxArea.set_deferred("monitoring", false)
-	GameManager.add_score(score_value)
+	GameManager.add_gold(gold_value)
 
 	# Animasi mati di SpriteFrames di-set loop, jadi animation_finished tidak pernah terpancar.
 	# Tunggu sesuai durasi satu putaran animasi, lalu hapus.

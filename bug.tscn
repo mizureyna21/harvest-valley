@@ -173,7 +173,7 @@ animations = [{
 
 [node name="enemy" unique_id=798970522 instance=ExtResource("1_hs7dx")]
 max_health = 2
-score_value = 5
+gold_value = 5
 
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=1213785606]
 scale = Vector2(0.08, 0.08)

@@ -7,7 +7,7 @@ extends CharacterBody2D
 @export var attack_cooldown: float = 0.8
 @export var damage: int = 10
 @export var max_health: int = 3
-@export var score_value: int = 10         # skor saat mati (bug/fly meng-override di scene-nya)
+@export var gold_value: int = 10          # gold (drop monster) saat mati; bug/fly meng-override di scene-nya
 @export var knockback_friction: float = 600.0
 
 var player = null
@@ -168,7 +168,7 @@ func die():
 	$CollisionShape2D.set_deferred("disabled", true)
 	$DetectionArea.set_deferred("monitoring", false)
 	$HitboxArea.set_deferred("monitoring", false)
-	GameManager.add_score(score_value)
+	GameManager.add_gold(gold_value)
 
 	# Animasi mati di SpriteFrames di-set loop, jadi animation_finished tidak pernah terpancar
 	# (versi lama menunggu sinyal itu sehingga ghost tidak pernah terhapus).
