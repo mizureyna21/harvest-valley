@@ -172,6 +172,8 @@ animations = [{
 }]
 
 [node name="enemy" unique_id=798970522 instance=ExtResource("1_qarim")]
+max_health = 2
+score_value = 5
 
 [node name="AnimatedSprite2D" parent="." index="0" unique_id=1213785606]
 position = Vector2(0, 2.38)

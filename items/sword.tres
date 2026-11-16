@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="ItemData" format=3 uid="uid://cphdsmih45ft5"]
+
+[ext_resource type="Script" uid="uid://cl6npm3ywf8qs" path="res://items/item_data.gd" id="1_script"]
+[ext_resource type="Texture2D" uid="uid://e06sm4o8wm2l" path="res://items/weapons.png" id="2_weapons"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sword"]
+atlas = ExtResource("2_weapons")
+region = Rect2(0, 0, 16, 16)
+
+[resource]
+script = ExtResource("1_script")
+id = &"sword"
+display_name = "Pedang"
+icon = SubResource("AtlasTexture_sword")
+max_stack = 1
+heal_amount = 0
+metadata/_custom_type_script = "uid://cl6npm3ywf8qs"

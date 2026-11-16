@@ -36,6 +36,21 @@ var last_anim_direction: String = "front"
 # Batas kamera area spawn (farm), dipulihkan saat respawn kalau player mati di goa
 var spawn_camera_limits := Rect2i()
 
+# --- Pedang (slot alat ke-4) ---
+# Combat milik player, bukan FarmingManager: FarmingManager tetap murni urusan tanah/tanaman,
+# player hanya menanyakan alat aktif lalu memutuskan menebas atau meneruskan ke farming.
+const SWORD_ID := &"sword"
+const ENEMY_LAYER := 4                      # physics layer 3 "enemy" (nilai bit 4)
+const BODY_CENTER := Vector2(436, 304)      # tengah badan relatif root Player (anak-anak Player ber-offset)
+@export var sword_damage := 1
+@export var sword_cooldown := 0.4
+@export var sword_knockback := 160.0
+@export var sword_reach := 16.0             # jarak tengah hitbox dari tengah badan
+var _can_attack := true
+var sword_area: Area2D
+var _sword_shape: CollisionShape2D
+var _sword_sprite: Sprite2D
+
 
 func _ready():
 	add_to_group("player")
@@ -56,6 +71,8 @@ func _ready():
 	if camera:
 		spawn_camera_limits = Rect2i(camera.limit_left, camera.limit_top,
 				camera.limit_right - camera.limit_left, camera.limit_bottom - camera.limit_top)
+
+	_setup_sword()
 
 
 func _physics_process(delta):
@@ -116,15 +133,90 @@ func try_collect() -> void:
 		nearest.interact(self)
 
 
-# --- Bercocok tanam: pakai alat aktif ke tile di depan player ---
+# --- Klik kiri: pakai alat aktif (farming) atau menebas kalau pedang aktif ---
 func use_tool() -> void:
 	if health <= 0:
 		return
 	var farming := get_tree().get_first_node_in_group("farming_manager") as FarmingManager
 	if farming == null:
 		return
+	var item := farming.get_active_item()
+	if item and item.id == SWORD_ID:
+		if Inventory.get_count(SWORD_ID) > 0:
+			sword_attack(item)
+		return
 	# Posisi kaki = collision shape (node Player sendiri ada di (0, 0))
 	farming.use_active_tool(body_shape.global_position, get_facing_vector())
+
+
+# --- Pedang ---
+# Hitbox (Area2D) dan sprite tebasan dibuat lewat kode supaya tidak perlu menyentuh scene.
+# Hitbox hanya monitoring sesaat saat menebas; mask = layer "enemy" (badan musuh ada di layer 3).
+func _setup_sword() -> void:
+	sword_area = Area2D.new()
+	sword_area.name = "SwordArea"
+	sword_area.collision_layer = 0
+	sword_area.collision_mask = ENEMY_LAYER
+	sword_area.monitorable = false
+	sword_area.monitoring = false
+	_sword_shape = CollisionShape2D.new()
+	_sword_shape.shape = RectangleShape2D.new()
+	sword_area.add_child(_sword_shape)
+	add_child(sword_area)
+
+	# Visual tebasan (Pilihan A): sprite icon pedang yang diputar ~120 derajat lalu hilang.
+	# Belum ada frame animasi serang di NEWCHAR.png, jadi badan player tetap pakai animasi yang ada.
+	_sword_sprite = Sprite2D.new()
+	_sword_sprite.name = "SwordSwing"
+	_sword_sprite.visible = false
+	_sword_sprite.offset = Vector2(8, -8)   # pivot di gagang (pojok kiri-bawah icon)
+	add_child(_sword_sprite)
+
+
+func sword_attack(item: ItemData) -> void:
+	if not _can_attack:
+		return
+	_can_attack = false
+
+	var dir := Vector2(get_facing_vector())
+	# Hitbox ~22x24 px di depan badan sesuai arah hadap
+	sword_area.position = BODY_CENTER + dir * sword_reach
+	var rect := _sword_shape.shape as RectangleShape2D
+	rect.size = Vector2(22, 24) if dir.x != 0 else Vector2(24, 22)
+	sword_area.monitoring = true
+	_play_sword_swing(item, dir)
+
+	# Tunggu 2 frame fisika supaya overlap terhitung, lalu kumpulkan musuh yang kena
+	await get_tree().physics_frame
+	await get_tree().physics_frame
+	var from_pos: Vector2 = body_shape.global_position
+	for body in sword_area.get_overlapping_bodies():
+		if body == self or not body.has_method("take_damage"):
+			continue
+		var target := body.get_node_or_null("CollisionShape2D") as Node2D
+		var to_pos: Vector2 = target.global_position if target else body.global_position
+		var knock_dir := from_pos.direction_to(to_pos)
+		if knock_dir == Vector2.ZERO:
+			knock_dir = dir
+		body.take_damage(sword_damage, knock_dir, sword_knockback)
+	sword_area.set_deferred("monitoring", false)
+
+	await get_tree().create_timer(sword_cooldown).timeout
+	_can_attack = true
+
+
+func _play_sword_swing(item: ItemData, dir: Vector2) -> void:
+	_sword_sprite.texture = item.icon
+	_sword_sprite.position = BODY_CENTER + dir * 4.0
+	# Saat menghadap atas pedang digambar di belakang badan, selain itu di depan
+	move_child(_sword_sprite, 0 if last_anim_direction == "top" else get_child_count() - 1)
+	# Mata pedang di icon mengarah ke kanan-atas (-45 derajat); putar supaya searah hadap, lalu sapu 120 derajat
+	var center := dir.angle() + PI / 4.0
+	_sword_sprite.rotation = center - deg_to_rad(60)
+	_sword_sprite.visible = true
+	var tw := create_tween()
+	tw.tween_property(_sword_sprite, "rotation", center + deg_to_rad(60), 0.16)
+	tw.tween_callback(func(): _sword_sprite.visible = false)
 
 
 func get_facing_vector() -> Vector2i:

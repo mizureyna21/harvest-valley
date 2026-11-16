@@ -7,12 +7,15 @@ extends CharacterBody2D
 @export var attack_cooldown: float = 0.8
 @export var damage: int = 10
 @export var max_health: int = 3
+@export var score_value: int = 10         # skor saat mati (bug/fly meng-override di scene-nya)
+@export var knockback_friction: float = 600.0
 
 var player = null
 var is_attacking = false
 var is_dead = false
 var health = 3
 var last_anim = "walk_bot"
+var knockback_velocity = Vector2.ZERO
 
 # --- Variabel untuk jalan acak ---
 var wander_direction = Vector2.ZERO
@@ -54,8 +57,9 @@ func _physics_process(delta):
 		return
 
 	if is_attacking:
-		velocity = Vector2.ZERO
+		velocity = knockback_velocity
 		move_and_slide()
+		knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
 		return
 
 	if player:
@@ -95,7 +99,10 @@ func _physics_process(delta):
 		else:
 			anim.pause()   # diam di frame terakhir, hadap arah terakhir
 
+	# Dorongan knockback (saat kena pedang) ditambahkan ke gerak normal lalu melambat
+	velocity += knockback_velocity
 	move_and_slide()
+	knockback_velocity = knockback_velocity.move_toward(Vector2.ZERO, knockback_friction * delta)
 
 
 # Pilih animasi sesuai arah gerak dominan
@@ -135,24 +142,51 @@ func _on_hitbox_area_body_entered(body):
 		is_attacking = false
 
 
-# --- KALAU GHOST DISERANG ---
-func take_damage(amount := 1, _knock_dir := Vector2.ZERO, _force := 0.0):
+# --- KALAU GHOST DISERANG (dipanggil pedang player) ---
+# Interface sama dengan slime (character_body_2d.gd): take_damage(amount, knock_dir, force) + die()
+func take_damage(amount := 1, knock_dir := Vector2.ZERO, force := 0.0):
 	if is_dead:
 		return
 	health -= amount
-	anim.modulate = Color(1, 1, 1, 0.4)
-	await get_tree().create_timer(0.1).timeout
-	anim.modulate = Color(1, 1, 1, 1)
+	knockback_velocity = knock_dir * force
+
+	# Kedip transparan singkat (pakai tween, bukan await, supaya hit beruntun tidak dobel memanggil die)
+	var tw := create_tween()
+	tw.tween_property(anim, "modulate", Color(1, 1, 1, 0.4), 0.05)
+	tw.tween_property(anim, "modulate", Color(1, 1, 1, 1), 0.1)
+
 	if health <= 0:
 		die()
 
 
 func die():
+	if is_dead:
+		return
 	is_dead = true
 	velocity = Vector2.ZERO
+	knockback_velocity = Vector2.ZERO
 	$CollisionShape2D.set_deferred("disabled", true)
 	$DetectionArea.set_deferred("monitoring", false)
 	$HitboxArea.set_deferred("monitoring", false)
-	anim.play("death_animation")
-	await anim.animation_finished
+	GameManager.add_score(score_value)
+
+	# Animasi mati di SpriteFrames di-set loop, jadi animation_finished tidak pernah terpancar
+	# (versi lama menunggu sinyal itu sehingga ghost tidak pernah terhapus).
+	# Tunggu sesuai durasi satu putaran animasi, lalu hapus.
+	var wait := 0.3
+	if anim.sprite_frames and anim.sprite_frames.has_animation("death_animation"):
+		anim.play("death_animation")
+		wait = _animation_length(anim, "death_animation")
+	await get_tree().create_timer(wait).timeout
 	queue_free()
+
+
+static func _animation_length(sprite: AnimatedSprite2D, anim_name: StringName) -> float:
+	var frames := sprite.sprite_frames
+	var fps := frames.get_animation_speed(anim_name)
+	if fps <= 0.0:
+		return 0.3
+	var total := 0.0
+	for i in frames.get_frame_count(anim_name):
+		total += frames.get_frame_duration(anim_name, i)
+	return total / (fps * absf(sprite.speed_scale if sprite.speed_scale != 0.0 else 1.0))
